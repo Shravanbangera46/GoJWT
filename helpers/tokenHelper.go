@@ -2,6 +2,7 @@ package helpers
 
 import (
 	"context"
+	"fmt"
 	"log"
 	"os"
 	"time"
@@ -81,4 +82,31 @@ func UpdateAllTokens(token string, refreshToken string, user_id string) {
 	}
 	defer cancel()
 	return
+}
+func VerifyToken(signedToken string) (claims *SignedDetails, msg string) {
+	token, err := jwt.ParseWithClaims(
+		signedToken,
+		&SignedDetails{},
+		func(token *jwt.Token) (interface{}, error) {
+			return []byte(SECRET_KEY), nil
+		},
+	)
+	if err != nil {
+		msg = err.Error()
+		return
+	}
+	claims, ok := token.Claims.(*SignedDetails)
+	if !ok {
+		msg = fmt.Sprintf("Invalied Token ")
+		msg = err.Error()
+		return
+	}
+	if claims.ExpiresAt < time.Now().Local().Unix() {
+		msg = fmt.Sprintf("Token expierd")
+		msg = err.Error()
+		return
+
+	}
+	return claims, msg
+
 }

@@ -7,8 +7,8 @@ import (
 )
 
 func UserRoutes(incomming_Routes *gin.Engine) {
-	incomming_Routes.Use(middleware.Authenticate()).GET("/users", controller.GetUsers())
-
-	incomming_Routes.Use(middleware.Authenticate()).GET("/user/:user_id", controller.GetUser())
+	incomming_Routes.Use(middleware.Authenticate())
+	incomming_Routes.GET("/users", controller.GetUsers())
+	incomming_Routes.GET("/user/:user_id", controller.GetUser())
 
 }
